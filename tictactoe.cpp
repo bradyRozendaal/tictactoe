@@ -11,7 +11,7 @@ using namespace std;
 void printBoard(char board[3][3])
 {
   cout << " 1 2 3";//put out first row
-  char lines[3] = {'a', 'b', 'c'};//array of collumn indicators
+  char lines[3] = {'a', 'b', 'c'};//array of row indicators
   for (int i = 0; i < 3; i++)//loop through y values
     {
       for (int j = 0; j < 3; j++)//loop through x values (left to right, top to bottom)
@@ -27,7 +27,25 @@ void printBoard(char board[3][3])
 
 bool isOver(char board[3][3])
 {
-  
+  for (int i = 0; i < 3; i++)
+    {
+      char current = board[i];
+      if (current != ' ')
+	{
+	  if (current ==  )
+	    {
+	      
+	    }
+	  elif (i==0)
+	    {
+	      
+	    }
+	  elif (i==2)
+	    {
+	      
+	    }
+	}
+    }
 }
 char changeTurn(char turn)
 {
@@ -47,16 +65,66 @@ char changeTurn(char turn)
 }
 bool isValidPlacement(char board[3][3], int place[])
 {
-  
+  if (place[0] == -1)
+    {
+      return false;
+    }
+  if (board[place[0]][place[1]] != ' ')
+    {
+      return false;
+    }
+  else
+    {
+      return true;
+    }
 }
-int convertPlacementToInt()
+int convertPlacementToInt(char[2] place)
 {
-  
+  char lines[3] = {'a', 'b', 'c'};//array of row indicators
+  char collumns[3] = {'1', '2', '3'};//array of collumn indicators
+  int intPlace[2];//intialize return variable
+  bool found[2] = {false, false};
+  for (int i=0; i<3; i++)//iterate through lines and collumns
+    {
+      for (int j=0;j<2;j++;)//iterate through place character 1&2 in case person puts in '1a' instead of 'a1'
+	{
+	  if (place[j] == lines[i])//if this character in place is equal to anything in lines
+	    {
+	      intPlace[1] = i;//, set y position of return variable to num in array where char is found
+	      found[1] = true;
+	    }
+	  elif(place[j] == collumns[i])//if this character in place is equal to anything in collums
+	    {
+	      intPlace[0] = i;//, set x position of return variable to num in array where char is found
+	      found[2] = true;
+	    }
+	}
+    }
+  if (foundBoth(found))
+    {
+      return intPlace;
+    }
+  else
+    {
+      intPlace[0] = -1;
+      return intPlace;
+    }
+}
+bool foundBoth(bool found[2])
+{
+  for (i =0; i<2; i++;)
+    {
+      if (!found[i])
+	{
+	  return false;
+	}
+    }
+  return true;
 }
 
 int main()
 {
-  char board[3][3];
+  char board[3][3]={' '};
   char turn = 'x';
   int turnNum = 0;
   printBoard(board);
