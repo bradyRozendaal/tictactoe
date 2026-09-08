@@ -29,37 +29,50 @@ bool isOver(char board[3][3])
 {
   for (int i = 0; i < 3; i++)
     {
-      char current = board[i];
-      if (current != ' ')
+      char currenty = board[0][i];
+      char currentx = board[i][0];
+      cout << currentx;
+      if (currenty != '\0') //checks left to right if the same
 	{
-	  if (current ==  )
+	  if (currenty == board[1][i] && currenty == board[2][i])
 	    {
-	      
+	      return true;
 	    }
-	  elif (i==0)
+	  if (i==0)//if starting top left check diagonal
 	    {
-	      
+	      if (currenty == board[1][1] && currenty == board[2][2])
+		{
+		  return true;
+		}
 	    }
-	  elif (i==2)
+	  else if (i==2)//if starting bottom left check diagonal
 	    {
-	      
+	      if (currenty == board[1][1] && currenty == board[2][0])
+		{
+		  return true;
+		}
 	    }
-	}
+	  }
+	else if (currentx != '\0' && currentx == board[i][1] && currentx == board[i][2])
+	  {
+	    return true;
+	  }
     }
+  return false;
 }
 char changeTurn(char turn)
 {
-  if (turn == 'y')
+  if (turn == 'o')
     {
       return 'x';
     }
-  elif (turn == 'x')
+  else if (turn == 'x')
     {
-      return 'y';
+      return 'o';
     }
   else
     {
-      cout << "\nError: turn not 'x' or 'y'";
+      cout << "\nError: turn not 'x' or 'o'";
       return '0';
     }
 }
@@ -78,22 +91,33 @@ bool isValidPlacement(char board[3][3], int place[])
       return true;
     }
 }
-int convertPlacementToInt(char[2] place)
+bool foundBoth(bool found[2])
+{
+  for (int i =0; i<2; i++)
+    {
+      if (!found[i])
+	{
+	  return false;
+	}
+    }
+  return true;
+}
+int* convertPlacementToInt(char place[2])
 {
   char lines[3] = {'a', 'b', 'c'};//array of row indicators
   char collumns[3] = {'1', '2', '3'};//array of collumn indicators
-  int intPlace[2];//intialize return variable
+  int* intPlace = new int[2];//intialize return variable
   bool found[2] = {false, false};
   for (int i=0; i<3; i++)//iterate through lines and collumns
     {
-      for (int j=0;j<2;j++;)//iterate through place character 1&2 in case person puts in '1a' instead of 'a1'
+      for (int j=0;j<2;j++)//iterate through place character 1&2 in case person puts in '1a' instead of 'a1'
 	{
 	  if (place[j] == lines[i])//if this character in place is equal to anything in lines
 	    {
 	      intPlace[1] = i;//, set y position of return variable to num in array where char is found
 	      found[1] = true;
 	    }
-	  elif(place[j] == collumns[i])//if this character in place is equal to anything in collums
+	  else if(place[j] == collumns[i])//if this character in place is equal to anything in collums
 	    {
 	      intPlace[0] = i;//, set x position of return variable to num in array where char is found
 	      found[2] = true;
@@ -110,21 +134,11 @@ int convertPlacementToInt(char[2] place)
       return intPlace;
     }
 }
-bool foundBoth(bool found[2])
-{
-  for (i =0; i<2; i++;)
-    {
-      if (!found[i])
-	{
-	  return false;
-	}
-    }
-  return true;
-}
+
 
 int main()
 {
-  char board[3][3]={' '};
+  char board[3][3];
   char turn = 'x';
   int turnNum = 0;
   printBoard(board);
@@ -133,11 +147,11 @@ int main()
       cout << "\nWhere would you like to place " << turn << "(a1, b1, b3, etc)";
       char charPlace[2];
       cin >> charPlace;
-      int place[2] = covertPlacementToInt(charPlace);
+      int* place = convertPlacementToInt(charPlace);
       if (isValidPlacement(board, place))
 	{
 	  board[place[0]][place[1]] = turn;
-	  turn = changeTurn();
+	  turn = changeTurn(turn);
 	  turn++;
 	}
       else
@@ -151,8 +165,8 @@ int main()
     }
   else
     {
-      turn = changeTurn();//would have been the player who took the last turn
-      cout << "\n" << turn << " won."
+      turn = changeTurn(turn);//would have been the player who took the last turn
+      cout << "\n" << turn << " won.";
     }
   return 0;
 }
