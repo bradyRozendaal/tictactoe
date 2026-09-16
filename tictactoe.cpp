@@ -5,12 +5,12 @@ using namespace std;
 /*
   Project: TicTacToe
   Made by: Brady Rozendaal
-  Date: 
+  Date: 9/15/26
  */
 
 void printBoard(char board[3][3])
 {
-  cout << " 1 2 3";//put out first row
+  cout << "  1 2 3";//put out first row
   char lines[3] = {'a', 'b', 'c'};//array of row indicators
   for (int i = 0; i < 3; i++)//loop through y values
     {
@@ -23,6 +23,7 @@ void printBoard(char board[3][3])
 	  cout << board[j][i] << " "; //print out the character that is on the board
 	}
     }
+  cout << "\n";
 }
 
 bool isOver(char board[3][3])
@@ -31,8 +32,7 @@ bool isOver(char board[3][3])
     {
       char currenty = board[0][i];
       char currentx = board[i][0];
-      cout << currentx;
-      if (currenty != '\0') //checks left to right if the same
+      if (currenty != ' ') //checks left to right if the same
 	{
 	  if (currenty == board[1][i] && currenty == board[2][i])
 	    {
@@ -52,15 +52,15 @@ bool isOver(char board[3][3])
 		  return true;
 		}
 	    }
-	  }
-	else if (currentx != '\0' && currentx == board[i][1] && currentx == board[i][2])
+	}
+      if (currentx != ' ' && currentx == board[i][1] && currentx == board[i][2])
 	  {
 	    return true;
 	  }
     }
   return false;
 }
-char changeTurn(char turn)
+char changeTurn(char turn) //just flips the turn value
 {
   if (turn == 'o')
     {
@@ -76,7 +76,7 @@ char changeTurn(char turn)
       return '0';
     }
 }
-bool isValidPlacement(char board[3][3], int place[])
+bool isValidPlacement(char board[3][3], int place[])//checks if valid placement
 {
   if (place[0] == -1)
     {
@@ -91,7 +91,7 @@ bool isValidPlacement(char board[3][3], int place[])
       return true;
     }
 }
-bool foundBoth(bool found[2])
+bool foundBoth(bool found[2])//returns true if both bools passed into it are true
 {
   for (int i =0; i<2; i++)
     {
@@ -102,7 +102,7 @@ bool foundBoth(bool found[2])
     }
   return true;
 }
-int* convertPlacementToInt(char place[2])
+int* convertPlacementToInt(char place[2])//returns a pointer to 2 items
 {
   char lines[3] = {'a', 'b', 'c'};//array of row indicators
   char collumns[3] = {'1', '2', '3'};//array of collumn indicators
@@ -120,17 +120,17 @@ int* convertPlacementToInt(char place[2])
 	  else if(place[j] == collumns[i])//if this character in place is equal to anything in collums
 	    {
 	      intPlace[0] = i;//, set x position of return variable to num in array where char is found
-	      found[2] = true;
+	      found[0] = true;
 	    }
 	}
     }
   if (foundBoth(found))
     {
-      return intPlace;
+      return intPlace;//worked as expected, returns x and y value
     }
   else
     {
-      intPlace[0] = -1;
+      intPlace[0] = -1;//returns negative one if not a valid placement
       return intPlace;
     }
 }
@@ -139,34 +139,38 @@ int* convertPlacementToInt(char place[2])
 int main()
 {
   char board[3][3];
-  char turn = 'x';
+  memset(board, ' ', sizeof(board));//initialize every cell to empty (' ') instead of leaving garbage memory -- this took me way too long to realize :/
+  char turn = 'x';//starts turn x
   int turnNum = 0;
-  printBoard(board);
-  while (!isOver(board))
-    { 
-      cout << "\nWhere would you like to place " << turn << "(a1, b1, b3, etc)";
-      char charPlace[2];
+  while (!isOver(board) && turnNum < 9)//terminates the loop if max turn number is reached or a player has won
+    {
+      printBoard(board);
+      cout << "\nWhere would you like to place " << turn << "(a1, b1, b3, etc): ";
+      char charPlace[3] = {0};//room for 2 characters plus the null terminator cin appends
+      cin.width(3);//limit extraction so cin can never write past the array bounds
       cin >> charPlace;
       int* place = convertPlacementToInt(charPlace);
       if (isValidPlacement(board, place))
 	{
 	  board[place[0]][place[1]] = turn;
+	  turnNum++;
 	  turn = changeTurn(turn);
-	  turn++;
 	}
       else
 	{
 	  cout << "\nNot a valid placement.";
 	}
+      delete[] place;//avoid leaking the array convertPlacementToInt allocated
     }
-  if (turnNum == 9)
-    {
-      cout << "\nGame ended in a tie.";
-    }
-  else
+  printBoard(board);
+  if (isOver(board))
     {
       turn = changeTurn(turn);//would have been the player who took the last turn
       cout << "\n" << turn << " won.";
+    }
+  else
+    {
+      cout << "\nGame ended in a tie.";
     }
   return 0;
 }
