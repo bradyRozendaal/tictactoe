@@ -138,7 +138,10 @@ int* convertPlacementToInt(char place[2])//returns a pointer to 2 items
 
 int main()
 {
-  char board[3][3];
+  bool play = true;
+  while (play)
+  {
+	char board[3][3];
   memset(board, ' ', sizeof(board));//initialize every cell to empty (' ') instead of leaving garbage memory -- this took me way too long to realize :/
   char turn = 'x';//starts turn x
   int turnNum = 0;
@@ -172,5 +175,13 @@ int main()
     {
       cout << "\nGame ended in a tie.";
     }
-  return 0;
+	  char yn;
+	  cout << "would you like to play again? (y/n) \n";
+	  cin >> yn;
+	  if (yn == 'n')
+	  {
+		play = false;
+	  }
+  }
+    return 0;
 }
